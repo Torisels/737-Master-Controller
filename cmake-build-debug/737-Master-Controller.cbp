@@ -231,7 +231,7 @@
 		<Unit filename="C:/Users/Gustaw/Documents/Projects/737-Master-Controller/lib/readme.txt">
 			<Option target="737-Master-Controller"/>
 		</Unit>
-		<Unit filename="C:/Users/Gustaw/Documents/Projects/737-Master-Controller/src/main.c">
+		<Unit filename="C:/Users/Gustaw/Documents/Projects/737-Master-Controller/src/main.cpp">
 			<Option target="737-Master-Controller"/>
 		</Unit>
 		<Unit filename="C:/Users/Gustaw/Documents/Projects/737-Master-Controller/src/ws2812b_strip.S">

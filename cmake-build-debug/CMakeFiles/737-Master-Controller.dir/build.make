@@ -56,44 +56,44 @@ include CMakeFiles/737-Master-Controller.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/737-Master-Controller.dir/flags.make
 
-CMakeFiles/737-Master-Controller.dir/src/main.c.obj: CMakeFiles/737-Master-Controller.dir/flags.make
-CMakeFiles/737-Master-Controller.dir/src/main.c.obj: CMakeFiles/737-Master-Controller.dir/includes_C.rsp
-CMakeFiles/737-Master-Controller.dir/src/main.c.obj: ../src/main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Gustaw\Documents\Projects\737-Master-Controller\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/737-Master-Controller.dir/src/main.c.obj"
-	C:\Users\Gustaw\.platformio\packages\toolchain-atmelavr\bin\avr-gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\737-Master-Controller.dir\src\main.c.obj   -c C:\Users\Gustaw\Documents\Projects\737-Master-Controller\src\main.c
+CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj: CMakeFiles/737-Master-Controller.dir/flags.make
+CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj: CMakeFiles/737-Master-Controller.dir/includes_CXX.rsp
+CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj: ../src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Gustaw\Documents\Projects\737-Master-Controller\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj"
+	C:\Users\Gustaw\.platformio\packages\toolchain-atmelavr\bin\avr-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\737-Master-Controller.dir\src\main.cpp.obj -c C:\Users\Gustaw\Documents\Projects\737-Master-Controller\src\main.cpp
 
-CMakeFiles/737-Master-Controller.dir/src/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/737-Master-Controller.dir/src/main.c.i"
-	C:\Users\Gustaw\.platformio\packages\toolchain-atmelavr\bin\avr-gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Gustaw\Documents\Projects\737-Master-Controller\src\main.c > CMakeFiles\737-Master-Controller.dir\src\main.c.i
+CMakeFiles/737-Master-Controller.dir/src/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/737-Master-Controller.dir/src/main.cpp.i"
+	C:\Users\Gustaw\.platformio\packages\toolchain-atmelavr\bin\avr-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Gustaw\Documents\Projects\737-Master-Controller\src\main.cpp > CMakeFiles\737-Master-Controller.dir\src\main.cpp.i
 
-CMakeFiles/737-Master-Controller.dir/src/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/737-Master-Controller.dir/src/main.c.s"
-	C:\Users\Gustaw\.platformio\packages\toolchain-atmelavr\bin\avr-gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Gustaw\Documents\Projects\737-Master-Controller\src\main.c -o CMakeFiles\737-Master-Controller.dir\src\main.c.s
+CMakeFiles/737-Master-Controller.dir/src/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/737-Master-Controller.dir/src/main.cpp.s"
+	C:\Users\Gustaw\.platformio\packages\toolchain-atmelavr\bin\avr-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Gustaw\Documents\Projects\737-Master-Controller\src\main.cpp -o CMakeFiles\737-Master-Controller.dir\src\main.cpp.s
 
-CMakeFiles/737-Master-Controller.dir/src/main.c.obj.requires:
+CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj.requires:
 
-.PHONY : CMakeFiles/737-Master-Controller.dir/src/main.c.obj.requires
+.PHONY : CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj.requires
 
-CMakeFiles/737-Master-Controller.dir/src/main.c.obj.provides: CMakeFiles/737-Master-Controller.dir/src/main.c.obj.requires
-	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/src/main.c.obj.provides.build
-.PHONY : CMakeFiles/737-Master-Controller.dir/src/main.c.obj.provides
+CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj.provides: CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj.requires
+	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj.provides.build
+.PHONY : CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj.provides
 
-CMakeFiles/737-Master-Controller.dir/src/main.c.obj.provides.build: CMakeFiles/737-Master-Controller.dir/src/main.c.obj
+CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj.provides.build: CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj
 
 
 # Object files for target 737-Master-Controller
 737__Master__Controller_OBJECTS = \
-"CMakeFiles/737-Master-Controller.dir/src/main.c.obj"
+"CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj"
 
 # External object files for target 737-Master-Controller
 737__Master__Controller_EXTERNAL_OBJECTS =
 
-737-Master-Controller.exe: CMakeFiles/737-Master-Controller.dir/src/main.c.obj
+737-Master-Controller.exe: CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj
 737-Master-Controller.exe: CMakeFiles/737-Master-Controller.dir/build.make
 737-Master-Controller.exe: CMakeFiles/737-Master-Controller.dir/linklibs.rsp
 737-Master-Controller.exe: CMakeFiles/737-Master-Controller.dir/objects1.rsp
 737-Master-Controller.exe: CMakeFiles/737-Master-Controller.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Gustaw\Documents\Projects\737-Master-Controller\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable 737-Master-Controller.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Gustaw\Documents\Projects\737-Master-Controller\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable 737-Master-Controller.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\737-Master-Controller.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -101,7 +101,7 @@ CMakeFiles/737-Master-Controller.dir/build: 737-Master-Controller.exe
 
 .PHONY : CMakeFiles/737-Master-Controller.dir/build
 
-CMakeFiles/737-Master-Controller.dir/requires: CMakeFiles/737-Master-Controller.dir/src/main.c.obj.requires
+CMakeFiles/737-Master-Controller.dir/requires: CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj.requires
 
 .PHONY : CMakeFiles/737-Master-Controller.dir/requires
 

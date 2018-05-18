@@ -226,32 +226,32 @@ PLATFORMIO_UPDATE_ALL/fast:
 	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/build
 .PHONY : 737-Master-Controller/fast
 
-src/main.obj: src/main.c.obj
+src/main.obj: src/main.cpp.obj
 
 .PHONY : src/main.obj
 
 # target to build an object file
-src/main.c.obj:
-	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/src/main.c.obj
-.PHONY : src/main.c.obj
+src/main.cpp.obj:
+	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/src/main.cpp.obj
+.PHONY : src/main.cpp.obj
 
-src/main.i: src/main.c.i
+src/main.i: src/main.cpp.i
 
 .PHONY : src/main.i
 
 # target to preprocess a source file
-src/main.c.i:
-	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/src/main.c.i
-.PHONY : src/main.c.i
+src/main.cpp.i:
+	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
 
-src/main.s: src/main.c.s
+src/main.s: src/main.cpp.s
 
 .PHONY : src/main.s
 
 # target to generate assembly for a file
-src/main.c.s:
-	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/src/main.c.s
-.PHONY : src/main.c.s
+src/main.cpp.s:
+	$(MAKE) -f CMakeFiles\737-Master-Controller.dir\build.make CMakeFiles/737-Master-Controller.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
 
 # Help Target
 help:

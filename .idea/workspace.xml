@@ -21,7 +21,19 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec922180-b3d3-40f1-af0b-2568113a9075" name="Default" comment="" />
+    <list default="true" id="ec922180-b3d3-40f1-af0b-2568113a9075" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/737-Master-Controller.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/737-Master-Controller.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/DependInfo.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/build.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/cmake_clean.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/flags.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/link.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/objects1.rsp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/737-Master-Controller.dir/objects1.rsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+    </list>
     <ignored path="platformio.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -46,32 +58,14 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="main.c" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main.c">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+            <state relative-caret-position="533">
+              <caret line="53" column="16" selection-start-line="53" selection-start-column="16" selection-end-line="53" selection-end-column="16" />
               <folding>
                 <element signature="e#41#60#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ws2812b_strip.S" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws2812b_strip.S">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1598">
-              <caret line="94" column="21" selection-start-line="94" selection-start-column="21" selection-end-line="94" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -87,12 +81,16 @@
       <replace>PORTA</replace>
     </replaceStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main.cpp" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/src/ws2812b_strip.S" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/main.c" />
+        <option value="$PROJECT_DIR$/src/main.cpp" />
       </list>
     </option>
   </component>
@@ -124,6 +122,7 @@
       </profile-state>
     </entry>
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -215,12 +214,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1435919971910</updated>
-      <workItem from="1526679147287" duration="572000" />
+      <workItem from="1526679147287" duration="3461000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="572000" />
+    <option name="totallyTimeSpent" value="3461000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -230,7 +229,7 @@
       <window_info active="true" anchor="bottom" id="Messages" visible="true" weight="0.3293348" />
       <window_info anchor="bottom" id="CMake" weight="0.30970556" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Serial Monitor" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Terminal" />
@@ -270,10 +269,17 @@
     <entry file="file://$PROJECT_DIR$/platformio.ini">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$USER_HOME$/.platformio/packages/framework-arduinoavr/cores/arduino/Arduino.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="152" column="5" selection-start-line="152" selection-start-column="5" selection-end-line="152" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
+        <state relative-caret-position="17">
+          <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -284,17 +290,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.platformio/packages/framework-arduinoavr/cores/arduino/Arduino.h">
+    <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="152" column="5" selection-start-line="152" selection-start-column="5" selection-end-line="152" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+        <state relative-caret-position="533">
+          <caret line="53" column="16" selection-start-line="53" selection-start-column="16" selection-end-line="53" selection-end-column="16" />
           <folding>
             <element signature="e#41#60#0" expanded="true" />
           </folding>
