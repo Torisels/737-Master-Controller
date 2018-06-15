@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
-project(737-Master-Controller)
-#set_source_files_properties(ws2812b_strip.S PROPERTIES COMPILE_FLAGS "-x assembler-with-cpp")
-#set(CMAKE_ASM_FLAGS "${CFLAGS} -x assembler-with-cpp")
+project(737-master)
+
 include(CMakeListsPrivate.txt)
-#add_executable( ws2812b_strip.S main.cpp)
+
 add_custom_target(
     PLATFORMIO_BUILD ALL
     COMMAND ${PLATFORMIO_CMD} -f -c clion run
@@ -52,4 +51,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} src/main.cpp)
+add_executable(${PROJECT_NAME} ${SRC_LIST})
