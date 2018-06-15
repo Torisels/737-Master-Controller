@@ -5,7 +5,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <SoftwareSerial.cpp>
-
+#include <Wire.h>
 
 #define FLAG_SERIAL_RX 0xAA
 #define FLAG_SERIAL_TX 0xAB
@@ -17,10 +17,25 @@
 
 
 
-uint8_t FLAG_READY_TO_TRANSMIT = 0;
-uint8_t FLAG_PC_DATA_RECEIVED = 0;
-uint8_t FLAG_READY_TO_RECEIVE_FROM_SLAVE = 0;
-uint8_t FLAG_SLAVE_DATA_RECEIVED = 0;
+
+#define SLAVE_SEND_BF_SIZE 32
+#define SLAVE_RX_BF_SIZE 32
+
+#define NUMBER_OF_SLAVES 4
+#define FLAG_NEW_SLAVE 0xDD
+
+
+#define BYTES_TO_RECEIVE_FROM_SLAVE 24
+
+uint8_t FLAGS = 0x00;
+
+#define READY_TO_TRANSMIT (1<<0)
+#define PC_DATA_RECEIVED  (1<<1)
+#define READY_TO_RECEIVE_FROM_SLAVE (1<<2)
+#define SLAVE_DATA_RECEIVED (1<<3)
+
+uint8_t SLAVE_SEND_DATA[SLAVE_SEND_BF_SIZE][NUMBER_OF_SLAVES] = {};
+uint8_t SLAVE_RX_DATA[SLAVE_RX_BF_SIZE][NUMBER_OF_SLAVES] = {};
 
 extern "C"
 {
@@ -42,11 +57,11 @@ void handleSerialRx()
         case FLAG_SLAVE_RECEIVE:
             break;
         case FLAG_PC_READY_TO_RECEIVE:
-            FLAG_READY_TO_TRANSMIT = 1;
+            FLAGS |= READY_TO_TRANSMIT;
             break;
         case FLAG_PC_NORMAL_TRANSMIT:
 
-            FLAG_PC_DATA_RECEIVED = 1;
+            PC_DATA_RECEIVED = 1;
             break;
 
 
@@ -115,19 +130,37 @@ void loop()
     }
 
 
-    if(FLAG_READY_TO_TRANSMIT)//transmit data to PC
+    if(FLAGS & READY_TO_TRANSMIT)//transmit data to PC
     {
 
     }
-    if(FLAG_PC_DATA_RECEIVED)
+    if(PC_DATA_RECEIVED)//Normal, no setup routine
     {
-        //send to slaves
-        //finish sending
+        for(int i=1;i<=NUMBER_OF_SLAVES;i++)
+        {
+            Wire.beginTransmission(i);
+            Wire.write(SLAVE_SEND_DATA[i],SLAVE_SEND_BF_SIZE);
+            Wire.endTransmission();
+        }
+        PC_DATA_RECEIVED = 0;
+        READY_TO_RECEIVE_FROM_SLAVE = 1;
     }
-    if(FLAG_READY_TO_RECEIVE_FROM_SLAVE)
+    if(READY_TO_RECEIVE_FROM_SLAVE)
     {
         //rx from slave
-        FLAG_READY_TO_RECEIVE_FROM_SLAVE = 0;
-        FLAG_SLAVE_DATA_RECEIVED = 1;
+        for(int i=0;i<NUMBER_OF_SLAVES;i++)
+        {
+            Wire.requestFrom(i,BYTES_TO_RECEIVE_FROM_SLAVE);
+            uint8_t slave_rx_pointer = 0;
+            while(Wire.available())    // slave may send less than requested
+            {
+                SLAVE_RX_DATA[slave_rx_pointer][i] = Wire.read();    // receive a byte as character
+                slave_rx_pointer++;        // print the character
+            }
+            slave_rx_pointer = 0;
+        }
+
+        READY_TO_RECEIVE_FROM_SLAVE = 0;
+        SLAVE_DATA_RECEIVED = 1;
     }
 }
