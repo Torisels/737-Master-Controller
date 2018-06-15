@@ -13,7 +13,8 @@
 #define FLAG_SERIAL_SLAVE_SETUP 0xBB
 #define FLAG_SLAVE_RECEIVE 0xCA
 #define FLAG_PC_READY_TO_RECEIVE 0xCB
-#define FLAG_PC_NORMAL_TRANSMIT
+#define FLAG_TRANSMIT_TO_PC 0xCD
+#define FLAG_END_TRANSMIT_TO_PC 0xCE
 
 
 
@@ -27,15 +28,15 @@
 
 #define BYTES_TO_RECEIVE_FROM_SLAVE 24
 
-uint8_t FLAGS = 0x00;
+uint8_t FLAGS = 0;
 
-#define READY_TO_TRANSMIT (1<<0)
-#define PC_DATA_RECEIVED  (1<<1)
+#define READY_TO_TRANSMIT_TO_PC (1<<0)
+#define READY_TO_TRANSMIT_TO_SLAVE  (1<<1)
 #define READY_TO_RECEIVE_FROM_SLAVE (1<<2)
 #define SLAVE_DATA_RECEIVED (1<<3)
 
 uint8_t SLAVE_SEND_DATA[SLAVE_SEND_BF_SIZE][NUMBER_OF_SLAVES] = {};
-uint8_t SLAVE_RX_DATA[SLAVE_RX_BF_SIZE][NUMBER_OF_SLAVES] = {};
+uint8_t SLAVE_RX_DATA[NUMBER_OF_SLAVES][SLAVE_RX_BF_SIZE] = {};
 
 extern "C"
 {
@@ -57,11 +58,11 @@ void handleSerialRx()
         case FLAG_SLAVE_RECEIVE:
             break;
         case FLAG_PC_READY_TO_RECEIVE:
-            FLAGS |= READY_TO_TRANSMIT;
+            FLAGS |= READY_TO_TRANSMIT_TO_PC;
             break;
-        case FLAG_PC_NORMAL_TRANSMIT:
+        case FLAG_TRANSMIT_TO_PC:
 
-            PC_DATA_RECEIVED = 1;
+            READY_TO_TRANSMIT_TO_SLAVE = 1;
             break;
 
 
@@ -99,68 +100,55 @@ void loop()
 {
     if(Serial.available()>=2)
     {
-        uint8_t a = Serial.read();
-        if (a==0xFA)
+
+    }
+
+
+    if(FLAGS & READY_TO_TRANSMIT_TO_PC)//transmit data to PC = normal mode
+    {
+        uint8_t t_buffer[32] = {FLAG_TRANSMIT_TO_PC};
+        uint8_t counter = 1;
+        for(int i=0;i<NUMBER_OF_SLAVES;i++)
         {
-            uint8_t b = Serial.read();
-            for(int i=0;i<8;i++) {
-                if (CHECK_BIT(b, i))
-                {
-                    arr[k] = {0xFF};
-                    k++;
-                    arr[k]={0xFF};
-                    k++;
-                    arr[k] ={0xFF};
-                    k++;
-                }
-
-                else {
-                    arr[k] = {0x00};
-                    k++;
-                    arr[k]={0x00};
-                    k++;
-                    arr[k] ={0x00};
-                    k++;
-                }
-
-            }
-            k=0;
-            output_grb_strip(arr, sizeof(arr));
+            t_buffer[counter] = FLAG_NEW_SLAVE;
+            counter++;
+           for(int j=0;j< sizeof(SLAVE_RX_DATA[i]);j++)
+           {
+               t_buffer[counter] = SLAVE_RX_DATA[i][j];
+               counter++;
+           }
         }
+        t_buffer[counter] =  FLAG_END_TRANSMIT_TO_PC;
+        //WRITE ROUTINE
+        Serial.write(t_buffer, sizeof(t_buffer));
+        FLAGS &= ~READY_TO_TRANSMIT_TO_PC;
     }
-
-
-    if(FLAGS & READY_TO_TRANSMIT)//transmit data to PC
+    if(FLAGS & READY_TO_TRANSMIT_TO_SLAVE)//Normal, no setup routine
     {
-
-    }
-    if(PC_DATA_RECEIVED)//Normal, no setup routine
-    {
-        for(int i=1;i<=NUMBER_OF_SLAVES;i++)
+        for(int i=0;i<NUMBER_OF_SLAVES;i++)
         {
             Wire.beginTransmission(i);
             Wire.write(SLAVE_SEND_DATA[i],SLAVE_SEND_BF_SIZE);
             Wire.endTransmission();
         }
-        PC_DATA_RECEIVED = 0;
-        READY_TO_RECEIVE_FROM_SLAVE = 1;
+        FLAGS &= ~READY_TO_TRANSMIT_TO_SLAVE;
+        FLAGS |= READY_TO_RECEIVE_FROM_SLAVE;
     }
-    if(READY_TO_RECEIVE_FROM_SLAVE)
+    if(FLAGS & READY_TO_RECEIVE_FROM_SLAVE)
     {
         //rx from slave
         for(int i=0;i<NUMBER_OF_SLAVES;i++)
         {
             Wire.requestFrom(i,BYTES_TO_RECEIVE_FROM_SLAVE);
             uint8_t slave_rx_pointer = 0;
-            while(Wire.available())    // slave may send less than requested
+            while(Wire.available())
             {
-                SLAVE_RX_DATA[slave_rx_pointer][i] = Wire.read();    // receive a byte as character
-                slave_rx_pointer++;        // print the character
+                SLAVE_RX_DATA[i][slave_rx_pointer] = Wire.read();
+                slave_rx_pointer++;
             }
-            slave_rx_pointer = 0;
         }
 
-        READY_TO_RECEIVE_FROM_SLAVE = 0;
-        SLAVE_DATA_RECEIVED = 1;
+        FLAGS &= READY_TO_RECEIVE_FROM_SLAVE;
+        FLAGS |=  SLAVE_DATA_RECEIVED;
     }
 }
