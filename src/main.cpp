@@ -15,9 +15,13 @@
 #define FLAG_PC_READY_TO_RECEIVE 0xCB
 #define FLAG_TRANSMIT_TO_PC 0xCD
 #define FLAG_END_TRANSMIT_TO_PC 0xCE
+#define FLAG_SLAVE_SETUP_SUCCESS 0xCF
+#define FLAG_SLAVE_SETUP_FAIL 0xCE
 
+#define FLAG_PC_NORMAL_RX_MODE 0xAA
+#define FLAG_PC_SETUP_RX_MODE 0xAB
 
-
+#define FLAG_SLAVE_MASTER_SETUP 0xFA
 
 #define SLAVE_SEND_BF_SIZE 32
 #define SLAVE_RX_BF_SIZE 32
@@ -34,9 +38,14 @@ uint8_t FLAGS = 0;
 #define READY_TO_TRANSMIT_TO_SLAVE  (1<<1)
 #define READY_TO_RECEIVE_FROM_SLAVE (1<<2)
 #define SLAVE_DATA_RECEIVED (1<<3)
+#define PC_DATA_SENT (1<<4)
+#define SETUP_ROUTINE (1<<5)
 
 uint8_t SLAVE_SEND_DATA[SLAVE_SEND_BF_SIZE][NUMBER_OF_SLAVES] = {};
 uint8_t SLAVE_RX_DATA[NUMBER_OF_SLAVES][SLAVE_RX_BF_SIZE] = {};
+
+
+uint8_t SERIAL_RX_BUFFER[64] = {0};
 
 extern "C"
 {
@@ -98,9 +107,90 @@ void setup()
 
 void loop()
 {
-    if(Serial.available()>=2)
+    if(Serial.available()>0)
     {
+        uint8_t F_FLAG = Serial.read();
+        if(F_FLAG == FLAG_PC_NORMAL_RX_MODE)
+        {
 
+
+
+
+
+
+
+
+
+
+
+            FLAGS |= READY_TO_TRANSMIT_TO_PC;
+            FLAGS |= READY_TO_TRANSMIT_TO_SLAVE;
+        }
+
+
+        /* SETUP ROUTINE
+         * 1. FLAG_SETUP_RX_MODE
+         *
+         * SLAVES
+         * {2. FLAG_NEW_SLAVE
+         * 3. SLAVE_ID
+         * 4. PORTA-D,PINA-D
+         * 5. USE_ANALOG
+         * 6. (ANALOG_CHANNELS_ACTIVE)
+         * 7. (ANALOG_BIT_MASK)}
+         *
+         * */
+        else if(F_FLAG == FLAG_PC_SETUP_RX_MODE)
+        {
+            int slaves_counter = 0;
+            int slave_id = -1;
+
+            if(Serial.read()==FLAG_NEW_SLAVE)//this is for first slave
+            {
+                for(int i=0;i<NUMBER_OF_SLAVES;i++)
+                {
+                    uint8_t slave_buffer[SLAVE_SEND_BF_SIZE] = {FLAG_SERIAL_MASTER_SETUP};
+                    int buffer_counter = 0;
+
+                    if(Serial.available()<10)
+                        break;
+
+                    slave_id = Serial.read();
+                    if(slave_id!=i)
+                        break;
+                    uint8_t current;
+                    while((current = Serial.read())!=FLAG_NEW_SLAVE)
+                    {
+                        slave_buffer[buffer_counter] = current;
+                        buffer_counter++;
+                    }
+                    /*MASTER -> SLAVE */
+                    Wire.beginTransmission(i);
+                    Wire.write(slave_buffer,buffer_counter+1);
+                    Wire.endTransmission();
+                    /*ASK FOR CONFIRMATION*/
+                    Wire.requestFrom(i,1);
+                    uint8_t rx = 0;
+                    if(Wire.available())
+                    {
+                        rx = Wire.read();
+                    }
+                    /*INFORM PC*/
+                    if(rx==FLAG_SLAVE_SETUP_SUCCESS)
+                    {
+                        Serial.write(FLAG_SLAVE_SETUP_SUCCESS);
+                    }
+                    else{
+                        Serial.write(FLAG_SLAVE_SETUP_FAIL);
+                    }
+                    slaves_counter++;
+                }
+            }
+            if(slaves_counter==NUMBER_OF_SLAVES-1)
+            {
+                FLAGS |= SETUP_ROUTINE; //setup success
+            }
+        }
     }
 
 
@@ -122,7 +212,30 @@ void loop()
         //WRITE ROUTINE
         Serial.write(t_buffer, sizeof(t_buffer));
         FLAGS &= ~READY_TO_TRANSMIT_TO_PC;
+        FLAGS |= PC_DATA_SENT;
     }
+//    if(FLAGS & SETUP_ROUTINE)//setup routine
+//    {
+//        for(int i=0;i<NUMBER_OF_SLAVES;i++)
+//        {
+//            Wire.beginTransmission(i);
+//            Wire.write(SLAVE_SEND_DATA[i],SLAVE_SEND_BF_SIZE);
+//            Wire.endTransmission();
+//        }
+//
+//        for(int i=0;i<NUMBER_OF_SLAVES;i++)
+//        {
+//            Wire.requestFrom(i,1);
+//            while(Wire.available())
+//            {
+//              if(Wire.read() == FLAG_SLAVE_SETUP_SUCCESS)
+//              {
+//                  FLAGS &= ~SETUP_ROUTINE;
+//                  FLAGS |= READY_TO_TRANSMIT_TO_PC;
+//              }
+//            }
+//        }
+//    }
     if(FLAGS & READY_TO_TRANSMIT_TO_SLAVE)//Normal, no setup routine
     {
         for(int i=0;i<NUMBER_OF_SLAVES;i++)
@@ -134,7 +247,7 @@ void loop()
         FLAGS &= ~READY_TO_TRANSMIT_TO_SLAVE;
         FLAGS |= READY_TO_RECEIVE_FROM_SLAVE;
     }
-    if(FLAGS & READY_TO_RECEIVE_FROM_SLAVE)
+    if(FLAGS & READY_TO_RECEIVE_FROM_SLAVE && FLAGS&PC_DATA_SENT)
     {
         //rx from slave
         for(int i=0;i<NUMBER_OF_SLAVES;i++)
@@ -148,7 +261,8 @@ void loop()
             }
         }
 
-        FLAGS &= READY_TO_RECEIVE_FROM_SLAVE;
-        FLAGS |=  SLAVE_DATA_RECEIVED;
+        FLAGS &= ~READY_TO_RECEIVE_FROM_SLAVE;
+        FLAGS |= SLAVE_DATA_RECEIVED;
+        FLAGS &= ~PC_DATA_SENT;
     }
 }
