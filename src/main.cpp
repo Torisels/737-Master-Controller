@@ -21,6 +21,8 @@
 #define FLAG_PC_NORMAL_RX_MODE 0xAA
 #define FLAG_PC_SETUP_RX_MODE 0xAB
 
+#define FLAG_7_SEG_ROUTINE 0xDA
+#define GRB_ROUTNE 0xDB
 #define FLAG_SLAVE_MASTER_SETUP 0xFA
 
 #define SLAVE_SEND_BF_SIZE 32
@@ -33,13 +35,13 @@
 #define BYTES_TO_RECEIVE_FROM_SLAVE 24
 
 uint8_t FLAGS = 0;
-
 #define READY_TO_TRANSMIT_TO_PC (1<<0)
 #define READY_TO_TRANSMIT_TO_SLAVE  (1<<1)
 #define READY_TO_RECEIVE_FROM_SLAVE (1<<2)
 #define SLAVE_DATA_RECEIVED (1<<3)
 #define PC_DATA_SENT (1<<4)
 #define SETUP_ROUTINE (1<<5)
+
 
 uint8_t SLAVE_SEND_DATA[SLAVE_SEND_BF_SIZE][NUMBER_OF_SLAVES] = {};
 uint8_t SLAVE_RX_DATA[NUMBER_OF_SLAVES][SLAVE_RX_BF_SIZE] = {};
@@ -69,10 +71,10 @@ void handleSerialRx()
         case FLAG_PC_READY_TO_RECEIVE:
             FLAGS |= READY_TO_TRANSMIT_TO_PC;
             break;
-        case FLAG_TRANSMIT_TO_PC:
-
-            READY_TO_TRANSMIT_TO_SLAVE = 1;
-            break;
+//        case FLAG_TRANSMIT_TO_PC:
+//
+//            READY_TO_TRANSMIT_TO_SLAVE = 1;
+//            break;
 
 
 
@@ -97,6 +99,7 @@ void setup()
     //DDRA |= 1 << PA0;
    // output_grb_strip(arr, sizeof(arr));
     Serial.begin(115200);
+    pinMode(LED_BUILTIN,OUTPUT);
 }
 
 
@@ -113,6 +116,10 @@ void loop()
         if(F_FLAG == FLAG_PC_NORMAL_RX_MODE)
         {
 
+        digitalWrite(LED_BUILTIN,HIGH);
+        uint8_t bubu[3] = {0xDD,0xDB,0xDC};
+        Serial.write(bubu,3);
+//Serial.println("XDD");
 
 
 
@@ -120,14 +127,9 @@ void loop()
 
 
 
-
-
-
-            FLAGS |= READY_TO_TRANSMIT_TO_PC;
-            FLAGS |= READY_TO_TRANSMIT_TO_SLAVE;
+//            FLAGS |= READY_TO_TRANSMIT_TO_PC;
+//            FLAGS |= READY_TO_TRANSMIT_TO_SLAVE;
         }
-
-
         /* SETUP ROUTINE
          * 1. FLAG_SETUP_RX_MODE
          *
@@ -138,7 +140,7 @@ void loop()
          * 5. USE_ANALOG
          * 6. (ANALOG_CHANNELS_ACTIVE)
          * 7. (ANALOG_BIT_MASK)}
-         *
+         * 8. FLAG SETUP FINISHED
          * */
         else if(F_FLAG == FLAG_PC_SETUP_RX_MODE)
         {
@@ -150,7 +152,7 @@ void loop()
                 for(int i=0;i<NUMBER_OF_SLAVES;i++)
                 {
                     uint8_t slave_buffer[SLAVE_SEND_BF_SIZE] = {FLAG_SERIAL_MASTER_SETUP};
-                    int buffer_counter = 0;
+                    int buffer_counter = 1;
 
                     if(Serial.available()<10)
                         break;
@@ -179,17 +181,27 @@ void loop()
                     if(rx==FLAG_SLAVE_SETUP_SUCCESS)
                     {
                         Serial.write(FLAG_SLAVE_SETUP_SUCCESS);
+                        slaves_counter++;
                     }
                     else{
                         Serial.write(FLAG_SLAVE_SETUP_FAIL);
                     }
-                    slaves_counter++;
+
                 }
             }
             if(slaves_counter==NUMBER_OF_SLAVES-1)
             {
                 FLAGS |= SETUP_ROUTINE; //setup success
             }
+            FLAGS|=READY_TO_TRANSMIT_TO_PC;
+        }
+        else if(F_FLAG == FLAG_7_SEG_ROUTINE)
+        {
+            //implement max7219 routine
+        }
+        else if(F_FLAG == GRB_ROUTNE)
+        {
+            //implement grb routine
         }
     }
 
@@ -197,7 +209,7 @@ void loop()
     if(FLAGS & READY_TO_TRANSMIT_TO_PC)//transmit data to PC = normal mode
     {
         uint8_t t_buffer[32] = {FLAG_TRANSMIT_TO_PC};
-        uint8_t counter = 1;
+        int counter = 1;
         for(int i=0;i<NUMBER_OF_SLAVES;i++)
         {
             t_buffer[counter] = FLAG_NEW_SLAVE;
