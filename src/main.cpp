@@ -5,11 +5,11 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <SoftwareSerial.cpp>
-#include <Wire.h>
+#include "Wire.h"
 
 #define FLAG_SERIAL_RX 0xAA
 #define FLAG_SERIAL_TX 0xAB
-#define FLAG_SERIAL_MASTER_SETUP 0xBA
+#define FLAG_SERIAL_MASTER_SETUP 0xBD
 #define FLAG_SERIAL_SLAVE_SETUP 0xBB
 #define FLAG_SLAVE_RECEIVE 0xCA
 #define FLAG_PC_READY_TO_RECEIVE 0xCB
