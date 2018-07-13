@@ -6,6 +6,7 @@
 #include <SoftwareSerial.h>
 #include <SoftwareSerial.cpp>
 #include "Wire.h"
+#include <Keypad.h>
 
 #define FLAG_SERIAL_RX 0xAA
 #define FLAG_SERIAL_TX 0xAB
@@ -100,6 +101,9 @@ void setup()
    // output_grb_strip(arr, sizeof(arr));
     Serial.begin(115200);
     pinMode(LED_BUILTIN,OUTPUT);
+    pinMode(22,OUTPUT);
+    uint8_t arr[6] = {255,0,0,255,0,0};
+    output_grb_strip(arr,6);
 }
 
 
@@ -208,8 +212,9 @@ void loop()
 
     if(FLAGS & READY_TO_TRANSMIT_TO_PC)//transmit data to PC = normal mode
     {
+        int counter = 0;
         uint8_t t_buffer[32] = {FLAG_TRANSMIT_TO_PC};
-        int counter = 1;
+        counter++;
         for(int i=0;i<NUMBER_OF_SLAVES;i++)
         {
             t_buffer[counter] = FLAG_NEW_SLAVE;
