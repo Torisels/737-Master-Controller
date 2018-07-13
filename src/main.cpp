@@ -22,7 +22,11 @@
 #define FLAG_PC_NORMAL_RX_MODE 0xAA
 #define FLAG_PC_SETUP_RX_MODE 0xAB
 
-#define FLAG_7_SEG_ROUTINE 0xDA
+//max7219 routine
+#define FLAG_7_SEG_ROUTINE_START 0xDA
+#define FLAG_7_SEG_ROUTINE_STOP 0xEA
+
+
 #define GRB_ROUTNE 0xDB
 #define FLAG_SLAVE_MASTER_SETUP 0xFA
 
@@ -43,6 +47,8 @@ uint8_t FLAGS = 0;
 #define PC_DATA_SENT (1<<4)
 #define SETUP_ROUTINE (1<<5)
 
+#define MAX7219_DIN 22
+#define MX7219_CLK 23  ///todo: change
 
 uint8_t SLAVE_SEND_DATA[SLAVE_SEND_BF_SIZE][NUMBER_OF_SLAVES] = {};
 uint8_t SLAVE_RX_DATA[NUMBER_OF_SLAVES][SLAVE_RX_BF_SIZE] = {};
@@ -57,6 +63,13 @@ extern "C"
 }
 uint8_t arr[24]={0};
 int k=0;
+
+void handleMaxData(uint8_t data)
+{
+    shiftOut(MAX7219_DIN, MX7219_CLK, MSBFIRST, data & 0x0F);
+    shiftOut(MAX7219_DIN, MX7219_CLK, MSBFIRST, (data >> 4));
+}
+
 
 void handleSerialRx()
 {
@@ -199,13 +212,17 @@ void loop()
             }
             FLAGS|=READY_TO_TRANSMIT_TO_PC;
         }
-        else if(F_FLAG == FLAG_7_SEG_ROUTINE)
+        else if(F_FLAG == FLAG_7_SEG_ROUTINE_START)
         {
-            //implement max7219 routine
+            uint8_t current;
+            while((current = Serial.read())!=FLAG_7_SEG_ROUTINE_STOP)
+            {
+                handleMaxData(current);
+            }
         }
         else if(F_FLAG == GRB_ROUTNE)
         {
-            //implement grb routine
+            //to be implemenmted
         }
     }
 
