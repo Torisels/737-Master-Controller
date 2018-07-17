@@ -47,8 +47,22 @@ uint8_t FLAGS = 0;
 #define PC_DATA_SENT (1<<4)
 #define SETUP_ROUTINE (1<<5)
 
+
+/*
+ *MAX7219 SECTION
+ */
 #define MAX7219_DIN 22
-#define MX7219_CLK 23  ///todo: change
+#define MAX7219_CS  24
+#define MAX7219_CLK 23  ///todo: change
+#define NumberOfMaxUnits 3
+byte max7219_reg_noop = 0x00;
+byte max7219_reg_decodeMode = 0x09;
+byte max7219_reg_intensity = 0x0a;
+byte max7219_reg_scanLimit = 0x0b;
+byte max7219_reg_shutdown = 0x0c;
+byte max7219_reg_displayTest = 0x0f;
+
+
 
 uint8_t SLAVE_SEND_DATA[SLAVE_SEND_BF_SIZE][NUMBER_OF_SLAVES] = {};
 uint8_t SLAVE_RX_DATA[NUMBER_OF_SLAVES][SLAVE_RX_BF_SIZE] = {};
@@ -61,13 +75,44 @@ extern "C"
     #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
     extern void output_grb_strip(uint8_t *ptr, uint16_t count);
 }
-uint8_t arr[24]={0};
-int k=0;
+
 
 void handleMaxData(uint8_t data)
 {
-    shiftOut(MAX7219_DIN, MX7219_CLK, MSBFIRST, data & 0x0F);
-    shiftOut(MAX7219_DIN, MX7219_CLK, MSBFIRST, (data >> 4));
+    shiftOut(MAX7219_DIN, MAX7219_CLK, MSBFIRST, data & 0x0F);
+    shiftOut(MAX7219_DIN, MAX7219_CLK, MSBFIRST, (data >> 4));
+}
+void printMaxCmd(byte cmd, byte data) {
+
+    digitalWrite(MAX7219_CS, LOW);
+
+    for (int i = 0; i < NumberOfMaxUnits; i++) {
+        shiftOut(MAX7219_DIN, MAX7219_CLK, MSBFIRST, cmd);
+        shiftOut(MAX7219_DIN, MAX7219_CLK, MSBFIRST, data);
+    }
+
+    digitalWrite(MAX7219_CS, HIGH);
+}
+void setupMax7219()
+{
+    //display test off
+    printMaxCmd(0x0f, 0x0);
+
+    // shut down all digits
+    printMaxCmd(0x0c, 0x0);
+
+    // Set brightness for the digits to high(er) level than default minimum (Intensity Register Format)
+    printMaxCmd(0x0a, 0xFA);
+
+    // Set decode mode for ALL digits to output actual ASCII chars rather than just
+    // individual segments of a digit
+    printMaxCmd(0x09, 0xFF);
+
+    // Ensure ALL digits are displayed (Scan Limit Register)
+    printMaxCmd(0x0b, 0x07);
+
+    // Turn display ON (boot up = shutdown display)
+    printMaxCmd(0x0c, 0x01);
 }
 
 
@@ -114,9 +159,9 @@ void setup()
    // output_grb_strip(arr, sizeof(arr));
     Serial.begin(115200);
     pinMode(LED_BUILTIN,OUTPUT);
-    pinMode(22,OUTPUT);
-    uint8_t arr[6] = {255,0,0,255,0,0};
-    output_grb_strip(arr,6);
+//    pinMode(22,OUTPUT);
+//    uint8_t arr[6] = {255,0,0,255,0,0};
+//    output_grb_strip(arr,6);
 }
 
 
@@ -129,23 +174,14 @@ void loop()
 {
     if(Serial.available()>0)
     {
-        uint8_t F_FLAG = Serial.read();
-        if(F_FLAG == FLAG_PC_NORMAL_RX_MODE)
+        uint8_t first_flag = Serial.read();
+        if(first_flag == FLAG_PC_NORMAL_RX_MODE)
         {
 
-        digitalWrite(LED_BUILTIN,HIGH);
-        uint8_t bubu[3] = {0xDD,0xDB,0xDC};
-        Serial.write(bubu,3);
-//Serial.println("XDD");
 
 
-
-
-
-
-
-//            FLAGS |= READY_TO_TRANSMIT_TO_PC;
-//            FLAGS |= READY_TO_TRANSMIT_TO_SLAVE;
+            FLAGS |= READY_TO_TRANSMIT_TO_PC;
+            FLAGS |= READY_TO_TRANSMIT_TO_SLAVE;
         }
         /* SETUP ROUTINE
          * 1. FLAG_SETUP_RX_MODE
@@ -159,7 +195,7 @@ void loop()
          * 7. (ANALOG_BIT_MASK)}
          * 8. FLAG SETUP FINISHED
          * */
-        else if(F_FLAG == FLAG_PC_SETUP_RX_MODE)
+        else if(first_flag == FLAG_PC_SETUP_RX_MODE)
         {
             int slaves_counter = 0;
             int slave_id = -1;
@@ -168,15 +204,19 @@ void loop()
             {
                 for(int i=0;i<NUMBER_OF_SLAVES;i++)
                 {
+                    uint8_t buffer_counter = 0;
                     uint8_t slave_buffer[SLAVE_SEND_BF_SIZE] = {FLAG_SERIAL_MASTER_SETUP};
-                    int buffer_counter = 1;
+                    buffer_counter++;
 
-                    if(Serial.available()<10)
+                    if(Serial.available()<10) //received not enough data
                         break;
 
                     slave_id = Serial.read();
-                    if(slave_id!=i)
+
+                    if(slave_id!=i)//PC and MASTER are not in sync
                         break;
+
+                    //declare local variable fot iteration
                     uint8_t current;
                     while((current = Serial.read())!=FLAG_NEW_SLAVE)
                     {
@@ -212,15 +252,17 @@ void loop()
             }
             FLAGS|=READY_TO_TRANSMIT_TO_PC;
         }
-        else if(F_FLAG == FLAG_7_SEG_ROUTINE_START)
+        else if(first_flag == FLAG_7_SEG_ROUTINE_START)
         {
+            digitalWrite(MAX7219_CS, LOW);
             uint8_t current;
             while((current = Serial.read())!=FLAG_7_SEG_ROUTINE_STOP)
             {
                 handleMaxData(current);
             }
+            digitalWrite(MAX7219_CS, HIGH);
         }
-        else if(F_FLAG == GRB_ROUTNE)
+        else if(first_flag == GRB_ROUTNE)
         {
             //to be implemenmted
         }
